@@ -1,0 +1,49 @@
+<h2>Lista Kontaktów</h2>
+<table class="contact-table">
+  <tr>
+    <th>Imię</th>
+    <th>Nazwisko</th>
+    <th>Telefon</th>
+    <th>Akcje</th>
+  </tr>
+  <tr *ngFor="let contact of contacts">
+    <td>{{ contact.firstName }}</td>
+    <td>{{ contact.lastName }}</td>
+    <td>{{ contact.phone }}</td>
+    <td>
+      <button class="btn btn-info" (click)="showDetails(contact.firstName)">Szczegóły</button>
+    </td>
+  </tr>
+</table>
+
+<div *ngIf="selectedContact" class="contact-details">
+  <h3>Szczegóły Kontaktu</h3>
+  <ng-container *ngIf="!isEditMode(selectedContact)">
+    <p><strong>Imię:</strong> {{ selectedContact.firstName }}</p>
+    <p><strong>Nazwisko:</strong> {{ selectedContact.lastName }}</p>
+    <p><strong>Email:</strong> {{ selectedContact.email }}</p>
+    <p><strong>Telefon:</strong> {{ selectedContact.phone }}</p>
+    <p><strong>Data Urodzenia:</strong> {{ selectedContact.birthDate | date }}</p>
+    <p><strong>Kategoria:</strong> {{selectedContact.category.name}}</p> 
+
+    <button class="btn btn-success" (click)="enterEditMode(selectedContact)">Edytuj</button>
+  </ng-container>
+  <ng-container *ngIf="isEditMode(selectedContact)">
+    <form #editForm="ngForm" id="editForm" (ngSubmit)="updateContact()">
+      <p><strong>Imię:</strong> <input [(ngModel)]="selectedContact.firstName" /></p>
+      <p><strong>Nazwisko:</strong> <input [(ngModel)]="selectedContact.lastName" /></p>
+      <p><strong>Email:</strong> <input [(ngModel)]="selectedContact.email" /></p>
+      <p><strong>Telefon:</strong> <input [(ngModel)]="selectedContact.phone" /></p>
+      <p><strong>Data Urodzenia:</strong> <input [(ngModel)]="selectedContact.birthDate" /></p>
+      <p><strong>Kategoria:</strong></p> 
+      <select [(ngModel)]="selectedContact.category.name">
+        <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+      </select>
+      <p *ngIf="selectedContact.categoryId === selectedCategory.id"><strong>Podkategoria:</strong>
+        
+      </p>
+    </form>
+    <button [disabled]="editForm.dirty" form="editForm" type="submit" class="btn btn-success btn-block">Zapisz</button>
+    <button (click)="cancelEditMode(selectedContact)" class="btn btn-danger">Anuluj</button>
+  </ng-container>
+</div>
